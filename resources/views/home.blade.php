@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">{{ Auth::user()->name }}さん、こんにちは！</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,8 +13,24 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    <div>
+                        <ul class="list-group">
+                            <!--
+                            <li class="list-group-item">
+                                <a href="{{route('user.info')}}">ユーザー情報</a>
+                            </li>
+                            -->
+                            <li class="list-group-item">
+                                <a href="{{route('user.payment')}}">お支払い状況の確認</a>
+                            </li>
+                            <li class="list-group-item">
+                                <form action="{{route('logout')}}" method="POST">
+                                    @csrf
+                                    <button id="btn-logout" class="btn btn-danger">ログアウト</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
