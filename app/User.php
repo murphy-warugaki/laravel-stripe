@@ -2,95 +2,38 @@
 
 namespace App;
 
-use Encore\Admin\Traits\DefaultDatetimeFormat;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Airlock\HasApiTokens;
-use Encore\Admin\Auth\Database\HasPermissions;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-
-/**
- * Class Administrator.
- *
- * @property Role[] $roles
- */
-class User extends Model implements AuthenticatableContract
+class User extends Authenticatable
 {
-    use Authenticatable;
-    use HasPermissions;
-    use DefaultDatetimeFormat;
-    use HasApiTokens;
-
-    protected $fillable = ['username', 'password', 'name', 'avatar'];
+    use Notifiable;
 
     /**
-     * Create a new Eloquent model instance.
+     * The attributes that are mass assignable.
      *
-     * @param array $attributes
+     * @var array
      */
-    public function __construct(array $attributes = [])
-    {
-        $connection = config('admin.database.connection') ?: config('database.default');
-
-        $this->setConnection($connection);
-
-        $this->setTable(config('admin.database.users_table'));
-
-        parent::__construct($attributes);
-    }
+    protected $fillable = [
+        'name', 'email', 'password',
+    ];
 
     /**
-     * Get avatar attribute.
+     * The attributes that should be hidden for arrays.
      *
-     * @param string $avatar
-     *
-     * @return string
+     * @var array
      */
-    public function getAvatarAttribute($avatar)
-    {
-        if (url()->isValidUrl($avatar)) {
-            return $avatar;
-        }
-
-        $disk = config('admin.upload.disk');
-
-        if ($avatar && array_key_exists($disk, config('filesystems.disks'))) {
-            return Storage::disk(config('admin.upload.disk'))->url($avatar);
-        }
-
-        $default = config('admin.default_avatar') ?: '/vendor/laravel-admin/AdminLTE/dist/img/user2-160x160.jpg';
-
-        return admin_asset($default);
-    }
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
 
     /**
-     * A user has and belongs to many roles.
+     * The attributes that should be cast to native types.
      *
-     * @return BelongsToMany
+     * @var array
      */
-    public function roles(): BelongsToMany
-    {
-        $pivotTable = config('admin.database.role_users_table');
-
-        $relatedModel = config('admin.database.roles_model');
-
-        return $this->belongsToMany($relatedModel, $pivotTable, 'user_id', 'role_id');
-    }
-
-    /**
-     * A User has and belongs to many permissions.
-     *
-     * @return BelongsToMany
-     */
-    public function permissions(): BelongsToMany
-    {
-        $pivotTable = config('admin.database.user_permissions_table');
-
-        $relatedModel = config('admin.database.permissions_model');
-
-        return $this->belongsToMany($relatedModel, $pivotTable, 'user_id', 'permission_id');
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 }
