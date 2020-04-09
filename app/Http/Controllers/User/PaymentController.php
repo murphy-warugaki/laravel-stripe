@@ -68,9 +68,10 @@ class PaymentController extends Controller
             ], 400);
         }
 
-        return [
-            'status' => 'success',
-        ];
+        return response()->json([
+            'code' => 200,
+            'message' => 'success',
+        ]);
     }
 
 

@@ -74,11 +74,11 @@
     <div class="container" id="app">
       <div class="row justify-content-center">
         <div class="col-md-8">
-          @if (session('errors'))
-          <div class="alert alert-danger" role="alert">
-            {{ session('errors') }}
+          
+          <div class="alert alert-danger" role="alert" v-if="error.length">
+            @{{ error }}
           </div>
-          @endif
+          
           <div class="card">
             <div class="card-header">クレジットカード登録</div>
 
@@ -123,14 +123,15 @@
                 plan: '',
                 url: '{{ route('user.payment.store') }}',
                 status: '',
+                error: '',
                 // php
                 publicKey: '{{ config('services.stripe.key') }}',
                 client_secret: '{{ $intent->client_secret }}'
               },
               methods: {
                 subscribe() {
-
-                    this.stripe.confirmCardSetup(
+                  this.error = '';
+                  this.stripe.confirmCardSetup(
                         this.client_secret,
                         {
                             payment_method: {
@@ -152,6 +153,11 @@
 
                             // 登録アクション
                             axios.post(this.url, params).then((result) => {
+                              if (result.data.code == 400) {
+                                this.error = result.data.message;
+                                return;
+                              }
+
                               this.status = result.status;
                             });
                         }
@@ -163,8 +169,21 @@
                     // クレジットカードセット
                     Vue.nextTick(() => {
                       const selector = '#cardNumber';
+                      const style = {
+                          base: {
+                              fontSize: '12px',
+                              color: "#32325d",
+                              border: "solid 1px ccc"
+                          }
+                      };
+
+                      const classes = {
+                          base: "form-control"
+                      };
 
                       this.stripeCard = this.stripe.elements().create('card', {
+                        style:style,
+                        classes:classes,
                         hidePostalCode: true
                       });
                       
