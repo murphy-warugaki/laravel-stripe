@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">現在登録しているクレジットカード</div>
+                <div class="card-header"><a href="{{route('home')}}">メニューページに戻る</a></div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -35,7 +35,7 @@
                                 <li class="list-group-item"><span>カードブランド：</span><span>{{$defaultCard["brand"]}}</span></li>
                             </ul>
                         @else
-                        <p>現在登録されているクレジットカードはありません。</p>
+                        
                         @endif
                     </div>
 
@@ -55,8 +55,6 @@
                             <a href="{{route('user.payment.form')}}" class="btn btn-primary">クレジットカード情報を新規登録</a>
                         </div>
                     @endif
-
-                    <p><a href="{{route('home')}}">メニューページに戻る</a></p>
                 </div>
             </div>
         </div>
