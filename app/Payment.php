@@ -18,7 +18,7 @@ class Payment extends Model
 
     public static function setCustomer($token, $user)
     {
-        \Stripe\Stripe::setApiKey(\Config::get('payment.stripe_secret_key'));
+        \Stripe\Stripe::setApiKey(\Config::get('services.stripe.secret'));
 
         //Stripe上に顧客情報をtokenを使用することで保存
         try {
@@ -61,7 +61,7 @@ class Payment extends Model
      */
     public static function updateCustomer($token, $user)
     {
-        \Stripe\Stripe::setApiKey(\Config::get('payment.stripe_secret_key'));
+        \Stripe\Stripe::setApiKey(\Config::get('services.stripe.secret'));
 
         try {
             $customer = \Stripe\Customer::retrieve($user->stripe_id);
@@ -127,7 +127,7 @@ class Payment extends Model
      */
     protected static function deleteCard($user)
     {
-        \Stripe\Stripe::setApiKey(\Config::get('payment.stripe_secret_key'));
+        \Stripe\Stripe::setApiKey(\Config::get('services.stripe.secret'));
         $customer = \Stripe\Customer::retrieve($user->stripe_id);
         $card = $customer->sources->data[0];
 

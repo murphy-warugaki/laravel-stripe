@@ -1,4 +1,5 @@
 /* 基本設定*/
+
 const stripe = Stripe(stripe_public_key);
 const elements = stripe.elements();
 
@@ -16,45 +17,39 @@ const classes = {
 };
 
 /* フォームでdivタグになっている部分をStripe Elementsを使ってフォームに変換 */
-const cardNumber = elements.create('cardNumber', {style:style,classes:classes});
-cardNumber.mount('#cardNumber');
-const cardCvc = elements.create('cardCvc', {style:style,classes:classes});
-cardCvc.mount('#securityCode');
-const cardExpiry = elements.create('cardExpiry', {style:style,classes:classes});
-cardExpiry.mount('#expiration');
+const cardElement = elements.create('card', {style:style,classes:classes, hidePostalCode: true});
+cardElement.mount('#cardNumber');
 
+// form submit
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const cardHolderName = document.getElementById('cardName');
+    const cardButton = document.getElementById('card-button');
+    const clientSecret = cardButton.dataset.secret;
+    const form = document.getElementById('form_payment');
 
-/* id="form_paymentがついたFormのsubmitEvent発生時のプログラム処理を定義"*/
-document.querySelector('#form_payment').addEventListener('submit', function(e) {
-
-    /* 何も処理をかまさないとそのままクレジットカード情報が送信されてしまうので一旦HTMLのFormタグがが従来もっている送信機能を停止させる。 */
-        e.preventDefault();
-
-    /* Stripe.jsを使って、フォームに入力されたコードをStripe側に送信。今回ご紹介している方法の場合、「カード名義」だけはStripe Elementsの仕組みを使っていないため、このままだとカード名義の情報が足りずにカード情報の暗号化ができなくなってしまうので、{name:document.querySelector('#cardName').value}を足すことで、フォームに入力されたカード名義情報も、他の情報と同時にStripeに送ることができるようになる。 */
-        stripe.createToken(cardNumber,{name: document.querySelector('#cardName').value}).then(function(result) {
-
-
-    /* errorが返ってきた場合はその旨を表示 */
-            if (result.error) {
-                alert("カード登録処理時にエラーが発生しました。カード番号が正しいものかどうかをご確認いただくか、別のクレジットカードで登録してみてください。");
-            } else {
-
-    /* 暗号化されたコードが返ってきた場合は以下のStripeTokenHandler関数を実行。その際、引数として暗号化されたコードを渡してあげる。 */
-                stripeTokenHandler(result.token);
+    cardButton.addEventListener('click', async (e) => {
+console.log('hgoehogehoge');
+        const { setupIntent, error } = await stripe.confirmCardSetup(
+            clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: { name: cardHolderName.value }
+                }
             }
-        });
+        );
 
-
-    /* id="form_payment"が指定されたformの送信ボタン直前に、input type="hidden"のHTMLを挿入し、値にStripeから返ってきた暗号化情報を設定。そして、実際にフォームの内容を送信（事実上、送信されるのは暗号化情報のみとなる） */
-        function stripeTokenHandler(token) {
+        if (error) {
+            // ユーザーに"error.message"を表示する…
+        } else {
             const form = document.getElementById('form_payment');
             const hiddenInput = document.createElement('input');
             hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripeToken');
-            hiddenInput.setAttribute('value', token.id);
+            hiddenInput.setAttribute('name', 'payment_method');
+            hiddenInput.setAttribute('value', setupIntent.payment_method);
             form.appendChild(hiddenInput);
 
             form.submit();
         }
-
-    },false);
+    });
+}, false);

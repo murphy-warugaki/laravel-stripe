@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('App\Logs\HmlLog');
-        //Cashier::ignoreMigrations();
+        Cashier::ignoreMigrations();
     }
 
     /**
