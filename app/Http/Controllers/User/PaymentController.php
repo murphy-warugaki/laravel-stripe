@@ -68,6 +68,10 @@ class PaymentController extends Controller
             ], 400);
         }
 
+        $endpoint = 'https://hooks.slack.com/services/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';
+        $client   = new \Razorpay\Slack\Client($endpoint);
+        $client->send($content);
+
         return response()->json([
             'code' => 200,
             'message' => 'success',
