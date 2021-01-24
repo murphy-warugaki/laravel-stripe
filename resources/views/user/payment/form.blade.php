@@ -73,15 +73,15 @@
   <main class="py-4">
     <div class="container" id="app">
       <div class="row justify-content-center">
+          <div class="col-md-12 alert alert-danger" role="alert" v-if="error.length">
+            @{{ error }}
+          </div>
+          <div class="col-md-12 alert alert-info" role="alert" v-if="status.length">
+            @{{ status }}
+          </div>
         <div class="col-md-8">
           <div style="margin: 30px auto;">
             <h2>{{ Auth::user()->name }}さんとしてログイン中</h2>
-          </div>
-          <div class="alert alert-danger" role="alert" v-if="error.length">
-            @{{ error }}
-          </div>
-          <div class="alert alert-info" role="alert" v-if="status.length">
-            @{{ status }}
           </div>
           
           <div class="card">
