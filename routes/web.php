@@ -26,3 +26,6 @@ Route::get('/user/payment', 'User\PaymentController@getCurrentPayment')->name('u
 Route::get('/user/payment/form', 'User\PaymentController@getPaymentForm')->name('user.payment.form');
 Route::post('/user/payment/store', 'User\PaymentController@storePaymentInfo')->name('user.payment.store');
 Route::post('/user/payment/destroy', 'User\PaymentController@deletePaymentInfo')->name('user.payment.destroy');
+
+// serviceからユーザー作成
+Route::get('/service/user/create', 'Service\UserController@create')->name('service.user.create');

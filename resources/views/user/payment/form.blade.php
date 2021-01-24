@@ -21,8 +21,8 @@
   <div>
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
       <div class="container">
-        <a class="navbar-brand" href="{{ url('/') }}">
-          {{ __('クレジットカード情報') }}
+        <a class="navbar-brand" href="{{ url('/home') }}">
+          <img src="{{ asset('logo-c.png') }}" style="width: 30px;"><span style="display: inline;"> Unito</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
           <span class="navbar-toggler-icon"></span>
@@ -48,8 +48,8 @@
             @endif
             @else
             <li class="nav-item dropdown">
-              <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                {{ Auth::user()->name }} <span class="caret"></span>
+              <a role="button">
+                {{ Auth::user()->name }}
               </a>
 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -73,10 +73,15 @@
   <main class="py-4">
     <div class="container" id="app">
       <div class="row justify-content-center">
-        <div class="col-md-8">
-          
-          <div class="alert alert-danger" role="alert" v-if="error.length">
+          <div class="col-md-12 alert alert-danger" role="alert" v-if="error.length">
             @{{ error }}
+          </div>
+          <div class="col-md-12 alert alert-info" role="alert" v-if="status.length">
+            @{{ status }}
+          </div>
+        <div class="col-md-8">
+          <div style="margin: 30px auto;">
+            <h2>{{ Auth::user()->name }}さんとしてログイン中</h2>
           </div>
           
           <div class="card">
@@ -94,17 +99,23 @@
                  <input type="text" id="cardName" class="form-control" value="" v-model="card_holder_name" placeholder="カード名義を入力" required>
                </div>
                <div class="form-group" v-if='!status'>
-                 <button type="button" class="btn btn-primary" @click="subscribe">カードを登録する</button>
+                 <button type="button" class="btn btn-primary" @click="subscribe" style="background-color: #FF9C9C; border-color: #FF9C9C; width: 40%;">カードを登録する</button>
                </div>
                <div class="form-group" v-else>
                 <button type="button" class="btn btn-success">登録が完了しました</button>
                </div>
              </form>
-             <a href="{{route('user.payment')}}">クレジットカード情報ページに戻る</a>
+             <!--
+              <a href="{{route('user.payment')}}">クレジットカード情報ページに戻る</a>
+            -->
            </div>
          </div>
        </div>
+       <div style="margin: 20px auto;">
+        <p>CVCは、デビットカードやクレジットカードの裏面に記載されている3桁の番号です。</p>
+      </div>
      </div>
+
    </div>
  </main>
 </div>
@@ -143,7 +154,7 @@
                         
                         if (result.error) {  //　失敗
                             
-                            console.log('登録失敗');
+                            this.error = '登録に失敗しました';
 
                         } else {   //　成功
 
@@ -158,7 +169,7 @@
                                 return;
                               }
 
-                              this.status = result.status;
+                              this.status = 'クレジットカードの登録が完了しました';
                             });
                         }
                         
