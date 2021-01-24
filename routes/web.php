@@ -28,4 +28,4 @@ Route::post('/user/payment/store', 'User\PaymentController@storePaymentInfo')->n
 Route::post('/user/payment/destroy', 'User\PaymentController@deletePaymentInfo')->name('user.payment.destroy');
 
 // serviceからユーザー作成
-Route::post('/service/user/create', 'Service\UserController@create')->name('service.user.create');
+Route::get('/service/user/create', 'Service\UserController@create')->name('service.user.create');

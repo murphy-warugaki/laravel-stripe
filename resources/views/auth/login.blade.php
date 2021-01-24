@@ -4,8 +4,13 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <h3>ようこそUnitoへ</h3>
+            <div style="margin-top: 10px; color: #F86262">
+                <p style="margin-bottom: 5px;">申し込み情報をメールで送信しました</p>
+                <p>まだ入居は確定していません、先ほどのメールアドレスとパスワードを入力してください</p>
+            </div>
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">クレジットカードを登録する</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
@@ -55,8 +60,8 @@
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('ログイン') }}
+                                <button type="submit" class="btn btn-primary" style="background-color: #FF9C9C; border-color: #FF9C9C;">
+                                    ログインする
                                 </button>
 
                                 @if (Route::has('password.request'))
@@ -68,6 +73,7 @@
                                 @endif
                             </div>
                         </div>
+                        <p>お申し込みフォームで入力した、メールアドレス・パスワードでログインできます。<br> 上記より会員登録をいただき、家賃の支払い用のクレジットカードをご登録ください。<br>空室確認後、入居時にかかる費用をお支払いいただいた後、ご入居確定となります。</p>
                     </form>
                 </div>
             </div>
